@@ -1,0 +1,284 @@
+export type AgeId = "newborn" | "emerging" | "social";
+
+export type Activity = {
+  id: string;
+  age: AgeId | "all";
+  context: string;
+  eyebrow: string;
+  title: string;
+  intro: string;
+  steps: string[];
+  why: string;
+  stop: string;
+};
+
+export const ageOptions: Array<{ id: AgeId; label: string; note: string }> = [
+  { id: "newborn", label: "0–4 weeks", note: "Very small, quiet exchanges" },
+  { id: "emerging", label: "5–8 weeks", note: "More looking, movement and early sounds" },
+  { id: "social", label: "9–12 weeks", note: "Longer alert moments and social responses" },
+];
+
+const sharedStop = "Pause if baby looks away repeatedly, yawns, stiffens, splays their fingers or becomes fussy.";
+
+const cards: Activity[] = [
+  // 0–4 weeks: holding
+  {
+    id: "n-hold-face", age: "newborn", context: "holding", eyebrow: "Close and quiet", title: "Your face is enough",
+    intro: "Newborns do not need a performance. A familiar face and voice are plenty.",
+    steps: ["Hold baby securely in your usual supported position.", "Let your face rest where baby can comfortably notice it.", "Say one soft phrase, then wait without asking for a response."],
+    why: "Warm, predictable presence helps a newborn begin learning the rhythm of interaction.", stop: sharedStop,
+  },
+  {
+    id: "n-hold-voice", age: "newborn", context: "holding", eyebrow: "A familiar anchor", title: "One phrase, twice",
+    intro: "Repetition can make a brand-new world feel a little more predictable.",
+    steps: ["Choose a short phrase such as “I’ve got you.”", "Say it slowly once while baby is settled.", "Wait several seconds. If baby remains comfortable, say it once more."],
+    why: "A repeated voice pattern offers connection without demanding attention.", stop: sharedStop,
+  },
+  // 0–4 weeks: floor
+  {
+    id: "n-floor-watch", age: "newborn", context: "floor", eyebrow: "Awake floor time", title: "Watch one movement",
+    intro: "Observation counts. You do not need to make baby move in a particular way.",
+    steps: ["Stay beside baby while they lie awake on their back in a clear, safe floor space.", "Notice one natural arm, leg or head movement.", "Name it softly: “Your hand moved.” Then pause."],
+    why: "Following rather than directing helps the caregiver learn this individual baby’s signals.", stop: sharedStop,
+  },
+  {
+    id: "n-floor-light", age: "newborn", context: "floor", eyebrow: "Gentle visual noticing", title: "Light and stillness",
+    intro: "A newborn may spend only a few seconds looking. That is a complete moment.",
+    steps: ["Stay close while baby is awake on their back in a safe floor space.", "Notice whether baby looks toward your face or a softly lit area of the room.", "Quietly name what they seem to notice, then let the scene stay still."],
+    why: "Simple shared attention connects a word and a real experience without adding stimulation.", stop: "Move baby away from direct sun or harsh light. " + sharedStop,
+  },
+  // 0–4 weeks: care
+  {
+    id: "n-care-story", age: "newborn", context: "care", eyebrow: "Connection inside care", title: "Tell the tiny story",
+    intro: "Diapering already contains your voice, face and reassuring touch.",
+    steps: ["Keep one hand on baby and move at your normal safe pace.", "Name one thing happening: “Fresh diaper” or “Here is your sock.”", "Finish with the same phrase each time: “All done. I’ve got you.”"],
+    why: "Predictable words can help routine care feel safe and social.", stop: "Focus fully on safe care whenever needed. Never leave baby unattended on a raised surface.",
+  },
+  {
+    id: "n-care-pause", age: "newborn", context: "care", eyebrow: "A pause in the routine", title: "Hello, little foot",
+    intro: "A body-care moment can also be a gentle introduction to language.",
+    steps: ["During dressing, securely support baby and notice one hand or foot.", "Name it once: “That is your foot.”", "Pause before continuing, noticing any look or movement."],
+    why: "Naming what is already happening adds language without creating another task.", stop: "Keep baby warm and safely supported. Stop the interaction if care needs your full attention.",
+  },
+  // 0–4 weeks: feeding
+  {
+    id: "n-feed-quiet", age: "newborn", context: "feeding", eyebrow: "No extra task", title: "Quiet company",
+    intro: "Feeding is already a full sensory and relationship experience.",
+    steps: ["Use the safe feeding position recommended for your baby.", "Let a stretch of the feed stay quiet.", "Notice baby’s pace without trying to teach or entertain."],
+    why: "Calm attention is meaningful interaction by itself.", stop: "Follow your healthcare professional’s feeding guidance. This is not feeding advice.",
+  },
+  {
+    id: "n-feed-hum", age: "newborn", context: "feeding", eyebrow: "Familiar sound", title: "A two-line hum",
+    intro: "A short, steady sound can accompany feeding without taking it over.",
+    steps: ["Settle into your usual safe feeding position.", "Hum one short line at a comfortable volume.", "Return to quiet and follow baby’s feeding signals."],
+    why: "A familiar voice can add warmth while keeping feeding responsive.", stop: "Stop if sound distracts or unsettles baby. Follow your clinician’s feeding guidance.",
+  },
+  // 0–4 weeks: walking
+  {
+    id: "n-walk-room", age: "newborn", context: "walking", eyebrow: "A very small tour", title: "One room, one word",
+    intro: "The home is already new enough. Choose only one thing to notice.",
+    steps: ["Carry or move with baby using your usual safe, supported method.", "Pause at one calm place, such as a window or doorway.", "Name one thing in a soft voice, then continue your day."],
+    why: "One real word in a shared setting is more appropriate than a stream of stimulation.", stop: "Avoid direct sun, strong temperature changes and loud areas. End if baby shows stress.",
+  },
+  {
+    id: "n-walk-sound", age: "newborn", context: "walking", eyebrow: "A familiar sound", title: "Pause and listen",
+    intro: "Ordinary household sounds can become a moment of shared attention.",
+    steps: ["Move with baby safely supported.", "Pause when you hear one gentle sound, such as water or a fan.", "Say “I hear it too,” then wait for a quiet beat."],
+    why: "You are pairing a calm adult response with a sound in baby’s environment.", stop: "Move away from sudden or loud sound. End if baby startles repeatedly or becomes unsettled.",
+  },
+
+  // 5–8 weeks: holding
+  {
+    id: "e-hold-coo", age: "emerging", context: "holding", eyebrow: "Early conversation", title: "Sound, then space",
+    intro: "A coo, mouth movement or small expression can be baby’s turn.",
+    steps: ["Hold baby securely where they can comfortably notice your face.", "Respond to one sound or expression with a gentle copy.", "Wait longer than feels necessary and see whether baby offers another turn."],
+    why: "Back-and-forth timing is the heart of responsive interaction.", stop: sharedStop,
+  },
+  {
+    id: "e-hold-smile", age: "emerging", context: "holding", eyebrow: "Face-to-face", title: "The slow smile",
+    intro: "Give baby time to discover your expression rather than presenting it quickly.",
+    steps: ["Begin with a relaxed face while holding baby securely.", "When baby looks toward you, slowly smile.", "Pause. If baby responds, describe it softly: “I see you.”"],
+    why: "A contingent response helps baby connect their attention with your social reaction.", stop: sharedStop,
+  },
+  // 5–8 weeks: floor
+  {
+    id: "e-floor-face", age: "emerging", context: "floor", eyebrow: "Awake floor time", title: "Follow my face",
+    intro: "Your face is a naturally interesting object—no flashing toy required.",
+    steps: ["Stay beside baby while they lie awake on their back in a clear floor space.", "Bring your face into comfortable view and speak once.", "Move your face only a little to one side; stop and let baby decide whether to follow."],
+    why: "Slow movement offers visual practice while preserving baby’s choice to engage.", stop: "Do not continue moving if baby loses interest. " + sharedStop,
+  },
+  {
+    id: "e-floor-kick", age: "emerging", context: "floor", eyebrow: "Movement without directing", title: "Kick commentary",
+    intro: "Baby supplies the movement. You supply one warm observation.",
+    steps: ["Stay close while baby lies awake on their back in a clear, safe space.", "Wait for a natural kick or stretch.", "Say “Big kick” or “Long stretch,” then pause for another turn."],
+    why: "Naming a self-initiated action joins language to baby’s own experience.", stop: sharedStop,
+  },
+  // 5–8 weeks: care
+  {
+    id: "e-care-hands", age: "emerging", context: "care", eyebrow: "Predictable care", title: "Two hands, two words",
+    intro: "Keep the routine moving while adding one repeatable language pattern.",
+    steps: ["During safe dressing, name “one hand” as a sleeve goes on.", "Name “two hands” when both are through.", "Smile or pause if baby looks toward you, then finish care."],
+    why: "Short repeated language fits into care without turning it into a lesson.", stop: "Keep baby safely supported and warm. Safe care always comes before interaction.",
+  },
+  {
+    id: "e-care-rhyme", age: "emerging", context: "care", eyebrow: "A familiar rhythm", title: "Your two-line care song",
+    intro: "The best song is the one you can remember while tired.",
+    steps: ["Choose a simple two-line tune using baby’s name.", "Sing it once during a routine change.", "Use the same tune another day rather than adding more verses."],
+    why: "Familiar rhythm can make care feel predictable and connected.", stop: "Keep one hand on baby on raised surfaces and stop singing whenever care needs your full attention.",
+  },
+  // 5–8 weeks: feeding
+  {
+    id: "e-feed-pace", age: "emerging", context: "feeding", eyebrow: "Responsive presence", title: "Notice the pace",
+    intro: "No chart is needed for this moment—just attention to the feed already happening.",
+    steps: ["Use your baby’s recommended safe feeding position.", "Quietly notice when baby’s pace changes.", "Follow the feeding signals and guidance you have been given; no narration is required."],
+    why: "Responsive attention during care is a relationship activity in itself.", stop: "This app does not assess feeding. Contact your healthcare professional with any concern.",
+  },
+  {
+    id: "e-feed-after", age: "emerging", context: "feeding", eyebrow: "After the feed", title: "One settled hello",
+    intro: "If baby is comfortably alert after feeding, share one quiet social moment.",
+    steps: ["Complete feeding and burping according to your usual guidance.", "If baby remains comfortably alert, bring your face into view.", "Say one soft hello, then let quiet return."],
+    why: "A brief face-and-voice exchange can fit naturally after care without extending wakefulness.", stop: "Skip this entirely if baby is sleepy, uncomfortable or needs feeding-related care.",
+  },
+  // 5–8 weeks: walking
+  {
+    id: "e-walk-stop", age: "emerging", context: "walking", eyebrow: "Shared noticing", title: "The sound stop",
+    intro: "Pause once rather than narrating everything around you.",
+    steps: ["Move with baby in your usual safe, supported way.", "At one gentle sound, stop and listen together.", "Name it in two words—“water running” or “birds outside”—then continue."],
+    why: "Short language tied to a real event supports shared attention.", stop: "Move away from loud, bright, hot or cold environments. End if baby becomes unsettled.",
+  },
+  {
+    id: "e-walk-window", age: "emerging", context: "walking", eyebrow: "A calm view", title: "Window weather",
+    intro: "A window can offer movement and light without needing a special toy.",
+    steps: ["Hold or move with baby safely supported, away from direct sun.", "Pause near a window and name the weather once.", "Wait for baby’s look or movement before adding one more phrase."],
+    why: "Following baby’s response keeps the experience reciprocal rather than instructional.", stop: "Avoid glare, direct sun and temperature extremes. " + sharedStop,
+  },
+
+  // 9–12 weeks: holding
+  {
+    id: "s-hold-copy", age: "social", context: "holding", eyebrow: "A longer social turn", title: "Copy the pattern",
+    intro: "Baby may now offer a little sequence: sound, movement, pause.",
+    steps: ["Hold baby securely and wait for a sound or expression.", "Copy its rhythm once—not necessarily the exact sound.", "Pause and let baby decide whether the exchange continues."],
+    why: "Reciprocal patterns support early communication without requiring words.", stop: sharedStop,
+  },
+  {
+    id: "s-hold-name", age: "social", context: "holding", eyebrow: "Warm recognition", title: "Name and wait",
+    intro: "A name can become the beginning of a familiar little exchange.",
+    steps: ["While holding baby securely, say their name once in a warm voice.", "Wait for a look, movement or sound.", "Respond to whatever baby does: “There you are.” Then pause again."],
+    why: "Waiting leaves room for baby to participate rather than only receive stimulation.", stop: sharedStop,
+  },
+  // 9–12 weeks: floor
+  {
+    id: "s-floor-hands", age: "social", context: "floor", eyebrow: "Body discovery", title: "Hands find hands",
+    intro: "Let baby’s own hands be the interesting object.",
+    steps: ["Stay beside baby while they lie awake on their back in a clear, safe floor space.", "Notice when their hands move near each other or toward their face.", "Name the action once and wait; do not force the hands together."],
+    why: "Self-initiated movement supports exploration and gives you something real to talk about.", stop: sharedStop,
+  },
+  {
+    id: "s-floor-tummy", age: "social", context: "floor", eyebrow: "Supervised awake movement", title: "Meet at eye level",
+    intro: "If tummy time is already part of baby’s clinician-approved routine, your face can be the activity.",
+    steps: ["Place baby on their tummy only while fully awake on a firm, clear floor surface and stay beside them.", "Bring your face down to their level and say one encouraging phrase.", "Keep it brief; return baby to their back when they tire or protest."],
+    why: "Your presence can make supervised awake tummy time social without adding equipment.", stop: "Continuous supervision is required. End immediately if baby becomes sleepy, distressed or cannot comfortably reposition their head.",
+  },
+  // 9–12 weeks: care
+  {
+    id: "s-care-anticipate", age: "social", context: "care", eyebrow: "A predictable cue", title: "Ready, then change",
+    intro: "A repeated phrase can gently signal what happens next.",
+    steps: ["Before one familiar care step, say “Ready?” in the same calm tone.", "Pause for a moment, then continue the safe care step.", "Respond to any look or movement without expecting it."],
+    why: "Consistent cues help routines feel understandable while leaving room for a response.", stop: "Keep baby safely supported. Do not delay care if baby is cold, upset or needs prompt attention.",
+  },
+  {
+    id: "s-care-choice", age: "social", context: "care", eyebrow: "Follow the interest", title: "What did you notice?",
+    intro: "During care, baby may fix on your face, a shadow or their own hand.",
+    steps: ["Continue safe diapering or dressing at your normal pace.", "Notice what baby looks toward without redirecting them.", "Name that one thing, then finish care with your familiar ending phrase."],
+    why: "Joining baby’s existing focus is responsive and requires no extra activity.", stop: "Never leave baby unattended on a raised surface. Safe care always comes first.",
+  },
+  // 9–12 weeks: feeding
+  {
+    id: "s-feed-signal", age: "social", context: "feeding", eyebrow: "Follow the signal", title: "Let baby set the tone",
+    intro: "This is a noticing practice for the caregiver, not feeding instruction.",
+    steps: ["Use the safe feeding position and approach recommended for your baby.", "Notice one signal you already recognize from your own baby.", "Respond according to your feeding guidance and allow the moment to stay quiet."],
+    why: "Confidence grows through everyday observation combined with trusted clinical guidance.", stop: "The app cannot assess intake, swallowing or illness. Contact your healthcare professional with concerns.",
+  },
+  {
+    id: "s-feed-voice", age: "social", context: "feeding", eyebrow: "A familiar ending", title: "Feed, finish, connect",
+    intro: "A brief phrase can mark the end of care without trying to keep baby awake.",
+    steps: ["Complete feeding according to your usual guidance.", "If baby is comfortably alert, say your familiar ending phrase once.", "If baby is sleepy, skip interaction and move into your safe sleep routine."],
+    why: "Responsive endings respect both connection and the need for rest.", stop: "Do not prolong wakefulness. Follow your clinician’s feeding advice and safe sleep guidance.",
+  },
+  // 9–12 weeks: walking
+  {
+    id: "s-walk-two", age: "social", context: "walking", eyebrow: "A two-stop tour", title: "Look, pause, move",
+    intro: "Two brief stops are enough for an entire little tour.",
+    steps: ["Move with baby safely supported.", "Pause at one calm sight and name it; wait for baby’s response.", "Move on. Later, repeat with one different sight and finish."],
+    why: "Brief changes followed by pauses support attention without flooding baby with input.", stop: "Avoid bright, loud or uncomfortable environments. End at the first tired or stressed signals.",
+  },
+  {
+    id: "s-walk-direction", age: "social", context: "walking", eyebrow: "Sound in the world", title: "Where did that come from?",
+    intro: "Let baby orient naturally; there is no correct direction to turn.",
+    steps: ["Move with baby safely supported in a calm environment.", "When a gentle sound happens, pause instead of turning baby toward it.", "Say “I heard that,” and watch what baby chooses to do."],
+    why: "Baby keeps control of their attention while you acknowledge the shared event.", stop: "Move away from sudden or loud sounds. Never test hearing with abrupt noise.",
+  },
+];
+
+const special: Record<string, Activity> = {
+  fussy: {
+    id: "special-fussy", age: "all", context: "all", eyebrow: "Connection, not stimulation", title: "Make the world smaller",
+    intro: "A fussy baby may need less input. There is nothing to teach right now.",
+    steps: ["Reduce noise, movement and bright light where you can.", "Hold baby safely or stay close. Use one steady phrase or a quiet hum.", "Give the same calm response a little time before trying something new."],
+    why: "A predictable, responsive adult can help a baby feel safe while they settle.",
+    stop: "If crying feels unusual, baby seems unwell or you are concerned, contact your healthcare professional.",
+  },
+  sleepy: {
+    id: "special-sleepy", age: "all", context: "all", eyebrow: "A quiet ending", title: "Name the goodbye",
+    intro: "Sleepy signals are a reason to end interaction, not squeeze in one more activity.",
+    steps: ["Lower your voice and reduce playful movement.", "Say one familiar ending phrase: “You’re tired. Our little moment is done.”", "Follow your safe sleep routine."],
+    why: "Respecting an ending is part of responsive caregiving too.",
+    stop: "For sleep, place baby on their back in an approved, firm, flat and bare sleep space.",
+  },
+  unsure: {
+    id: "special-unsure", age: "all", context: "all", eyebrow: "Observation is an activity", title: "Notice before doing",
+    intro: "You do not need to decode every signal. Start with ten quiet seconds.",
+    steps: ["Make sure baby is safe and supported, then simply watch.", "Notice their eyes, hands and movements without labelling them good or bad.", "If baby looks toward you or makes a sound, respond softly. If not, quiet company is enough."],
+    why: "Observation helps caregivers learn an individual baby’s rhythms without forcing interaction.",
+    stop: "If you are worried about baby’s behaviour or wellbeing, seek advice from your healthcare professional.",
+  },
+  empty: {
+    id: "special-empty", age: "all", context: "all", eyebrow: "Care for both of you", title: "Enough for now",
+    intro: "You do not owe the app—or your baby—an enrichment activity.",
+    steps: ["Choose the simplest safe option: quiet holding, or place baby safely in their approved sleep space.", "Take three ordinary breaths. No special technique required.", "If someone trusted is available, ask for a small, specific handoff."],
+    why: "A supported caregiver is part of a baby’s nurturing environment. Rest is not a missed milestone.",
+    stop: "If you feel you might lose control, place baby safely on their back in an approved bare sleep space, step away briefly and contact someone you trust.",
+  },
+  break: {
+    id: "special-break", age: "all", context: "all", eyebrow: "The caregiver comes first", title: "A safe pause",
+    intro: "Taking a break can be a caring response.",
+    steps: ["Place baby on their back in an approved, firm, flat and bare sleep space.", "Step into a nearby safe place for a few minutes. Drink water, breathe or message someone you trust.", "Return when you feel steadier. It is okay if baby cries during this brief safe pause."],
+    why: "A short safe pause is better than pushing through when you are overwhelmed.",
+    stop: "If you fear you may hurt yourself or the baby, contact local emergency help or a trusted person immediately.",
+  },
+};
+
+export function chooseActivity(input: {
+  age: AgeId;
+  state: string;
+  capacity: string;
+  context: string;
+  recent: string[];
+}): Activity {
+  if (input.context === "break") return special.break;
+  if (input.capacity === "empty") return special.empty;
+  if (input.state === "fussy") return special.fussy;
+  if (input.state === "sleepy") return special.sleepy;
+  if (input.state === "unsure") return special.unsure;
+
+  const eligible = cards.filter((item) => item.age === input.age && item.context === input.context);
+  const fresh = eligible.find((item) => !input.recent.slice(-6).includes(item.id));
+  if (fresh) return fresh;
+  return eligible[input.recent.length % eligible.length] ?? cards[0];
+}
+
+export function findActivity(id: string): Activity | undefined {
+  return cards.find((item) => item.id === id) ?? Object.values(special).find((item) => item.id === id);
+}
+
+export const activityCount = cards.length + Object.keys(special).length;
