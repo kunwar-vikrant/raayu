@@ -1,8 +1,12 @@
 # Raayu — here, baby
 
-A mobile-first prototype that helps caregivers of newborns choose one short,
+A mobile-first prototype that helps caregivers of babies through the first year choose one short,
 age-aware, screen-light interaction based on the baby’s current state, the
 caregiver’s capacity, and the moment they are already sharing.
+
+The library currently covers six stages from birth to 12 months, with 10
+contextual ideas in each stage plus lower-stimulation and caregiver-break paths.
+Each stage includes a concise safety lens and links to official age guidance.
 
 ## Run locally
 

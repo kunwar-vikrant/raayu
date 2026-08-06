@@ -192,6 +192,23 @@ button { color: inherit; }
 .library-note strong { font-family: var(--font-display), serif; font-size: 1.08rem; }
 .library-note span { color: var(--muted); font-size: 0.7rem; }
 
+.stage-snapshot {
+  max-width: 470px;
+  margin-top: 1.35rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255, 253, 248, 0.58);
+}
+
+.stage-snapshot > div { display: flex; align-items: baseline; gap: 0.55rem; }
+.stage-snapshot > div span { color: var(--muted); font-size: 0.64rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; }
+.stage-snapshot > div strong { color: var(--coral); font-size: 0.77rem; }
+.stage-snapshot p { margin: 0.45rem 0; color: var(--pine); font-size: 0.78rem; font-weight: 750; line-height: 1.4; }
+.stage-snapshot small { display: block; color: var(--muted); font-size: 0.68rem; line-height: 1.45; }
+.stage-snapshot small strong { color: var(--ink); }
+.stage-snapshot a { display: inline-block; margin-top: 0.65rem; color: var(--pine); font-size: 0.68rem; font-weight: 800; text-underline-offset: 3px; }
+
 blockquote {
   margin: 3rem 0 0;
   padding: 1.2rem 0 1.2rem 1.4rem;
@@ -557,6 +574,7 @@ footer a { color: var(--pine); font-weight: 750; text-underline-offset: 3px; }
   .action-stack { grid-template-columns: 1fr; }
   .primary-action { align-items: center; }
   .library-note { margin-left: auto; margin-right: auto; }
+  .stage-snapshot { margin-left: auto; margin-right: auto; text-align: left; }
   .result-options { align-items: flex-start; }
   .result-options > span { max-width: 120px; }
   footer { display: grid; text-align: center; }

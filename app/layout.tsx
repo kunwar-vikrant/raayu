@@ -8,7 +8,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const protocol = requestHeaders.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
   const origin = `${protocol}://${host}`;
   const title = "here, baby — one small moment together";
-  const description = "A screen-light, baby-led interaction coach for the first twelve weeks.";
+  const description = "A screen-light, baby-led interaction coach for the first year.";
 
   return {
     metadataBase: new URL(origin),

@@ -46,7 +46,7 @@ const contexts: Choice[] = [
   { id: "holding", label: "Holding baby", hint: "Close, supported and face-to-face", mark: "⌒" },
   { id: "floor", label: "Floor time", hint: "Baby is awake in a safe clear space", mark: "＿" },
   { id: "care", label: "Diapering or dressing", hint: "Turn a routine into connection", mark: "+" },
-  { id: "feeding", label: "Feeding", hint: "Stay present without adding a task", mark: "○" },
+  { id: "feeding", label: "Feeding or mealtime", hint: "Stay responsive without adding a lesson", mark: "○" },
   { id: "walking", label: "Walking around", hint: "At home or outside together", mark: "→" },
   { id: "break", label: "I need a break", hint: "Care for the caregiver first", mark: "⌁" },
 ];
@@ -316,7 +316,13 @@ export default function Home() {
           <div className="principles"><span>Baby-led</span><span>Screen-light</span><span>No scores</span></div>
           <div className="library-note">
             <strong>{activityCount} drafted moments</strong>
-            <span>Now adapted across three early age bands.</span>
+            <span>Adapted across six age bands through the first year.</span>
+          </div>
+          <div className="stage-snapshot">
+            <div><span>Current stage</span><strong>{ageProfile.label}</strong></div>
+            <p>{ageProfile.note}</p>
+            <small><strong>Safety lens:</strong> {ageProfile.safety}</small>
+            <a href={ageProfile.developmentUrl} target="_blank" rel="noreferrer">CDC guide for this age ↗</a>
           </div>
           <blockquote>
             “Responsive, back-and-forth exchanges help build the foundations for learning and wellbeing.”
@@ -394,9 +400,10 @@ export default function Home() {
       <footer>
         <p><strong>Prototype guidance only.</strong> Not medical advice or a developmental assessment.</p>
         <nav aria-label="Evidence and safety links">
-          <a href="https://www.cdc.gov/act-early/milestones/2-months.html" target="_blank" rel="noreferrer">CDC early development</a>
+          <a href={ageProfile.developmentUrl} target="_blank" rel="noreferrer">CDC guide for {ageProfile.label}</a>
           <a href="https://safetosleep.nichd.nih.gov/reduce-risk/tummy-time" target="_blank" rel="noreferrer">Safe tummy time</a>
-          <a href="https://www.cpsc.gov/SafeSleep" target="_blank" rel="noreferrer">Safe sleep</a>
+          <a href="https://safetosleep.nichd.nih.gov/safe-sleep" target="_blank" rel="noreferrer">Safe sleep through age 1</a>
+          <a href="https://www.cpsc.gov/safety-education/safety-guides/kids-and-babies/Childproofing-Your-Home" target="_blank" rel="noreferrer">Childproofing</a>
         </nav>
       </footer>
 

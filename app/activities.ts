@@ -1,4 +1,10 @@
-export type AgeId = "newborn" | "emerging" | "social";
+export type AgeId =
+  | "newborn"
+  | "emerging"
+  | "social"
+  | "discovering"
+  | "exploring"
+  | "communicating";
 
 export type Activity = {
   id: string;
@@ -12,10 +18,43 @@ export type Activity = {
   stop: string;
 };
 
-export const ageOptions: Array<{ id: AgeId; label: string; note: string }> = [
-  { id: "newborn", label: "0–4 weeks", note: "Very small, quiet exchanges" },
-  { id: "emerging", label: "5–8 weeks", note: "More looking, movement and early sounds" },
-  { id: "social", label: "9–12 weeks", note: "Longer alert moments and social responses" },
+export const ageOptions: Array<{
+  id: AgeId;
+  label: string;
+  note: string;
+  safety: string;
+  developmentUrl: string;
+}> = [
+  {
+    id: "newborn", label: "0–4 weeks", note: "Very small, quiet exchanges",
+    safety: "Support head and neck, keep interactions brief, and use a firm, flat, bare sleep space for every sleep.",
+    developmentUrl: "https://www.cdc.gov/act-early/milestones/2-months.html",
+  },
+  {
+    id: "emerging", label: "5–8 weeks", note: "More looking, movement and early sounds",
+    safety: "Stay within reach during awake floor time and pause at early tired or overwhelmed signals.",
+    developmentUrl: "https://www.cdc.gov/act-early/milestones/2-months.html",
+  },
+  {
+    id: "social", label: "9–12 weeks", note: "Longer alert moments and social responses",
+    safety: "Use only fully supervised, awake tummy time; always begin sleep on baby’s back.",
+    developmentUrl: "https://www.cdc.gov/act-early/milestones/2-months.html",
+  },
+  {
+    id: "discovering", label: "3–5 months", note: "Reaching, rolling attempts and playful sound turns",
+    safety: "Rolling can appear suddenly. Use the floor for play and keep one hand on baby on raised surfaces.",
+    developmentUrl: "https://www.cdc.gov/act-early/milestones/4-months.html",
+  },
+  {
+    id: "exploring", label: "6–8 months", note: "Sitting, transferring objects and curious exploration",
+    safety: "Expect mouthing and growing mobility. Remove small objects, batteries, magnets and unsafe cords from reach.",
+    developmentUrl: "https://www.cdc.gov/act-early/milestones/6-months.html",
+  },
+  {
+    id: "communicating", label: "9–12 months", note: "Gestures, imitation, shared attention and moving with purpose",
+    safety: "Childproof before crawling or pulling up: anchor furniture, block stairs and keep choking hazards locked away.",
+    developmentUrl: "https://www.cdc.gov/act-early/milestones/1-year.html",
+  },
 ];
 
 const sharedStop = "Pause if baby looks away repeatedly, yawns, stiffens, splays their fingers or becomes fussy.";
@@ -217,6 +256,204 @@ const cards: Activity[] = [
     intro: "Let baby orient naturally; there is no correct direction to turn.",
     steps: ["Move with baby safely supported in a calm environment.", "When a gentle sound happens, pause instead of turning baby toward it.", "Say “I heard that,” and watch what baby chooses to do."],
     why: "Baby keeps control of their attention while you acknowledge the shared event.", stop: "Move away from sudden or loud sounds. Never test hearing with abrupt noise.",
+  },
+
+  // 3–5 months: holding
+  {
+    id: "d-hold-chat", age: "discovering", context: "holding", eyebrow: "A sound conversation", title: "Answer one sound",
+    intro: "Baby may experiment with longer coos, squeals or mouth movements.",
+    steps: ["Hold baby securely where they can comfortably see you.", "Answer one sound with a similar gentle sound.", "Wait quietly and let baby decide whether there is another turn."],
+    why: "Back-and-forth sound play gives baby an active place in the exchange.", stop: sharedStop,
+  },
+  {
+    id: "d-hold-chuckle", age: "discovering", context: "holding", eyebrow: "Play without pressure", title: "The almost-laugh pause",
+    intro: "A smile, wiggle or almost-laugh can be enough; you do not need to chase a bigger reaction.",
+    steps: ["Begin with a familiar smile or playful phrase.", "If baby responds, repeat it once.", "Then pause with a relaxed face and notice whether baby invites more."],
+    why: "Repeating and pausing helps play stay responsive instead of overwhelming.", stop: sharedStop,
+  },
+  // 3–5 months: floor
+  {
+    id: "d-floor-reach", age: "discovering", context: "floor", eyebrow: "Baby chooses the movement", title: "One reach, no test",
+    intro: "A reach can be exploration, not a skill to pass.",
+    steps: ["Place baby awake on their back in a clear floor space and stay beside them.", "Offer one clean, intact, age-appropriate object within easy reach.", "Wait without moving baby’s arm; describe any look, swipe or touch."],
+    why: "Space to initiate helps baby connect attention with their own movement.", stop: "Remove anything with loose parts, cords, batteries or magnets. End if baby tires or becomes frustrated.",
+  },
+  {
+    id: "d-floor-roll", age: "discovering", context: "floor", eyebrow: "Room to move", title: "A view to one side",
+    intro: "Some babies begin rolling now; others do not. This is simply an invitation to look and move.",
+    steps: ["Keep baby awake on a firm, clear floor space while you stay within reach.", "Settle yourself slightly to one side and say baby’s name once.", "Let baby turn, reach or stay still without pulling an arm or leg."],
+    why: "Following an interesting person can invite self-directed movement without positioning baby by force.", stop: "Never practise rolling on a bed, sofa or changing surface. Pause at any sign of strain or distress.",
+  },
+  // 3–5 months: care
+  {
+    id: "d-care-toes", age: "discovering", context: "care", eyebrow: "Language inside routine", title: "A tiny body map",
+    intro: "Dressing already offers simple words linked to real sensations.",
+    steps: ["Keep baby securely supported during dressing.", "Name one body part as clothing passes it: “Here is your foot.”", "Wait for one look or movement, then finish the routine."],
+    why: "Words are easier to understand when they arrive with a familiar experience.", stop: "Keep one hand on baby on raised surfaces and let safe, warm care take priority.",
+  },
+  {
+    id: "d-care-pause", age: "discovering", context: "care", eyebrow: "Predictable sequence", title: "Ready, sleeve, done",
+    intro: "Three repeatable words can make a routine feel more understandable.",
+    steps: ["Before a familiar dressing step, say “Ready.”", "Complete the step safely and say “Sleeve” or “Sock.”", "Finish with “Done,” then pause for baby’s response."],
+    why: "A consistent word sequence helps connect language with what happens next.", stop: "Do not delay care if baby is cold or upset. Never leave baby unattended on a raised surface.",
+  },
+  // 3–5 months: feeding
+  {
+    id: "d-feed-notice", age: "discovering", context: "feeding", eyebrow: "Responsive presence", title: "Notice the pause",
+    intro: "This is caregiver observation, not feeding instruction.",
+    steps: ["Use the feeding approach and position recommended for your baby.", "Notice one natural pause or shift in attention.", "Respond according to baby’s feeding signals and your professional guidance; no extra play is needed."],
+    why: "Calm observation supports responsive care without turning feeding into a lesson.", stop: "The app cannot assess intake, swallowing or readiness for solids. Contact your healthcare professional with concerns.",
+  },
+  {
+    id: "d-feed-after", age: "discovering", context: "feeding", eyebrow: "Connection after care", title: "One sound after",
+    intro: "If baby is comfortably alert after a feed, leave room for one conversational turn.",
+    steps: ["Complete feeding and related care using your usual guidance.", "If baby remains settled and alert, answer one sound or expression.", "Pause, then end rather than extending wakefulness."],
+    why: "A brief response follows baby’s readiness instead of demanding attention during feeding.", stop: "Skip this if baby is sleepy, uncomfortable or needs feeding-related care.",
+  },
+  // 3–5 months: walking
+  {
+    id: "d-walk-color", age: "discovering", context: "walking", eyebrow: "One thing outside", title: "Find one colour",
+    intro: "A whole walk does not need a running commentary.",
+    steps: ["Carry or move with baby using your usual secure method.", "Pause at one comfortable view and name a single colour you see.", "Wait for baby’s look or movement, then continue."],
+    why: "A simple word tied to a shared view keeps language concrete and low-pressure.", stop: "Keep baby protected from direct sun, loud traffic and temperature extremes. End if baby becomes unsettled.",
+  },
+  {
+    id: "d-walk-rhythm", age: "discovering", context: "walking", eyebrow: "Familiar rhythm", title: "Three steps, one pause",
+    intro: "A short repeated rhythm can make movement feel social and predictable.",
+    steps: ["Move with baby safely supported.", "Say the same quiet word across three ordinary steps.", "Pause your voice, not your secure support, and notice any sound or movement from baby."],
+    why: "Repetition followed by silence creates space for baby to take a turn.", stop: "Keep full attention on safe movement and surroundings. Stop the game if it distracts you or baby.",
+  },
+
+  // 6–8 months: holding
+  {
+    id: "x-hold-babble", age: "exploring", context: "holding", eyebrow: "Babble has a turn", title: "Copy the rhythm",
+    intro: "Baby’s repeated sounds can become a tiny conversation.",
+    steps: ["Hold baby securely and listen for one sound pattern.", "Copy its rhythm once in your own comfortable voice.", "Wait long enough for baby to answer, change the pattern or finish."],
+    why: "Taking turns with sounds supports the social rhythm that comes before words.", stop: "Lower your voice or finish if baby looks away, stiffens, fusses or needs to move.",
+  },
+  {
+    id: "x-hold-mirror", age: "exploring", context: "holding", eyebrow: "Faces together", title: "Two faces in the mirror",
+    intro: "A reflection can be interesting without asking baby to recognise who it is.",
+    steps: ["Hold baby securely beside a fixed or baby-safe unbreakable mirror.", "Name your own face, then baby’s, using one short phrase each.", "Copy one expression baby makes and pause."],
+    why: "Faces, expressions and simple labels create a natural social exchange.", stop: "Keep glass, sharp edges and unsecured mirrors out of reach. Turn away if baby seems overstimulated.",
+  },
+  // 6–8 months: floor
+  {
+    id: "x-floor-transfer", age: "exploring", context: "floor", eyebrow: "Hands exploring", title: "One object, two hands",
+    intro: "Baby can investigate an object in their own way; there is no correct hand to use.",
+    steps: ["Sit close to baby in a clear floor space with one clean, intact, age-appropriate object.", "Offer it within reach and let baby grasp, mouth or transfer it independently.", "Describe one action, then stay quiet while baby explores."],
+    why: "Self-directed handling links vision, touch and movement while your words follow baby’s action.", stop: "Use nothing small enough to choke on and nothing with loose parts, cords, magnets or accessible batteries. Supervise continuously.",
+  },
+  {
+    id: "x-floor-hide", age: "exploring", context: "floor", eyebrow: "A gentle surprise", title: "Partly hidden",
+    intro: "A familiar object can briefly disappear without becoming a performance.",
+    steps: ["Place one large, age-appropriate object on the floor while you stay beside baby.", "Partly cover the object with a small cloth, leaving much of it visible.", "Wait to see what baby does; uncover it after a moment if needed."],
+    why: "A partly hidden object invites curiosity while keeping the challenge small and optional.", stop: "Keep cloth away from baby’s face and remove it immediately after the game. Never use this during sleep or leave baby unattended.",
+  },
+  // 6–8 months: care
+  {
+    id: "x-care-ready", age: "exploring", context: "care", eyebrow: "A cue before action", title: "Ready for the next bit?",
+    intro: "A pause before a familiar care step can make room for baby’s response.",
+    steps: ["Keep baby safely supported and say “Ready?” before one routine step.", "Pause for a look, sound or movement without requiring one.", "Complete the step and say “All done.”"],
+    why: "Predictable cues support understanding and treat baby as a participant in care.", stop: "Never let the pause compromise warmth, hygiene or safety. Keep one hand on baby on raised surfaces.",
+  },
+  {
+    id: "x-care-name", age: "exploring", context: "care", eyebrow: "Words that belong here", title: "Name what baby found",
+    intro: "Baby may reach for a sock, wipe or your hand during care.",
+    steps: ["Continue the routine safely while noticing what baby looks toward.", "Name the safe object once: “You found the sock.”", "If it is safe to touch, allow a brief look or touch, then finish care."],
+    why: "Following baby’s attention makes language relevant to the moment.", stop: "Keep wipes, creams, fasteners, plastic packaging and other unsafe items out of reach and mouth.",
+  },
+  // 6–8 months: feeding
+  {
+    id: "x-feed-finished", age: "exploring", context: "feeding", eyebrow: "Respect the signal", title: "A calm all-done",
+    intro: "This moment is about responsive connection, not deciding how much baby should eat.",
+    steps: ["Use the feeding position and approach recommended for your baby.", "Notice a signal you already understand, such as turning away or reaching.", "Respond according to your feeding guidance and use one consistent phrase such as “All done.”"],
+    why: "Predictable words can accompany responsive care without overriding baby’s signals.", stop: "Always supervise feeding with baby appropriately seated. The app does not assess readiness, texture, allergy, choking or intake.",
+  },
+  {
+    id: "x-feed-family", age: "exploring", context: "feeding", eyebrow: "A social mealtime", title: "One face, one word",
+    intro: "Mealtime connection can be very small while safe feeding remains the priority.",
+    steps: ["Once baby is securely positioned for feeding, make brief eye contact if baby seeks it.", "Name one familiar person or object at the table.", "Return your attention to baby’s feeding signals and your usual guidance."],
+    why: "Simple shared attention helps mealtime feel social without adding a separate task.", stop: "Keep baby upright and supervised according to professional guidance. Do not use this activity to introduce a food or texture.",
+  },
+  // 6–8 months: walking
+  {
+    id: "x-walk-shadow", age: "exploring", context: "walking", eyebrow: "Movement in the world", title: "Watch one shadow",
+    intro: "A moving shadow can offer a calm, equipment-free moment of shared attention.",
+    steps: ["Move with baby safely supported and find a comfortable patch of shade.", "Pause where one shadow moves and say “The shadow moved.”", "Wait for baby’s response before continuing."],
+    why: "Naming a visible change connects language with something baby is already noticing.", stop: "Avoid direct sun, heat and glare. Keep full attention on safe footing and baby’s support.",
+  },
+  {
+    id: "x-walk-again", age: "exploring", context: "walking", eyebrow: "A familiar landmark", title: "There it is again",
+    intro: "Recognition grows through ordinary repetition, not constant novelty.",
+    steps: ["Choose one familiar sight on your usual route, such as a door or tree.", "Pause and use the same two-word label you used before.", "Let baby look or move freely, then carry on."],
+    why: "A repeated label in a familiar place helps words become predictable and meaningful.", stop: "Stay away from traffic, animals, plants and objects baby could grab or mouth. End if baby needs rest.",
+  },
+
+  // 9–12 months: holding
+  {
+    id: "c-hold-gesture", age: "communicating", context: "holding", eyebrow: "Gestures are conversation", title: "Wave, then wait",
+    intro: "A gesture can carry meaning before a spoken word arrives.",
+    steps: ["Hold baby securely and wave once toward a familiar person or object.", "Say one matching word such as “hello” or “bye.”", "Pause without moving baby’s hand; respond warmly to any look, sound or gesture."],
+    why: "Pairing a simple gesture with a real event supports communication without requiring imitation.", stop: "Do not repeatedly prompt or move baby’s body for a response. Finish if baby turns away or wants down.",
+  },
+  {
+    id: "c-hold-clap", age: "communicating", context: "holding", eyebrow: "A familiar social game", title: "Your one-line hand game",
+    intro: "A tiny repeated game can become a shared routine.",
+    steps: ["Choose one short line from a familiar hand game.", "Clap or tap your own hands once while baby is securely supported.", "Pause for baby’s version—watching, moving, sounding or doing nothing all count."],
+    why: "Predictable social games bring together rhythm, anticipation and turn-taking.", stop: "Keep movements gentle and never force baby’s hands together. Stop at tired or overwhelmed signals.",
+  },
+  // 9–12 months: floor
+  {
+    id: "c-floor-container", age: "communicating", context: "floor", eyebrow: "Cause and effect", title: "In, out, or neither",
+    intro: "A container and one large object can support many kinds of exploration.",
+    steps: ["Sit beside baby with a stable open container and one large, age-appropriate object.", "Place the object in once, then take it out.", "Offer both and let baby repeat, change or ignore the action."],
+    why: "Putting objects in and out supports experimentation while baby controls the play.", stop: "Use only intact items too large to choke on. Avoid lids, cords, sharp edges, magnets, batteries and breakable containers.",
+  },
+  {
+    id: "c-floor-find", age: "communicating", context: "floor", eyebrow: "Remember and search", title: "Where did it go?",
+    intro: "A quick hide-and-find can be playful without testing memory.",
+    steps: ["Show baby one large, familiar, age-appropriate object on the clear floor.", "Hide it fully under a small cloth while baby watches.", "Ask once, then wait; reveal it cheerfully if baby does not search."],
+    why: "Seeing an object disappear and return invites curiosity about things that are out of view.", stop: "Keep the cloth away from baby’s face and remove it when finished. Stay within reach throughout.",
+  },
+  // 9–12 months: care
+  {
+    id: "c-care-next", age: "communicating", context: "care", eyebrow: "What comes next", title: "The next-step word",
+    intro: "Baby may begin to recognise words that reliably belong to a routine.",
+    steps: ["Before one familiar care step, name it with a single word such as “sock.”", "Pause briefly for any look, reach or sound.", "Complete the step safely and say “done.”"],
+    why: "A consistent word before an action supports anticipation and understanding.", stop: "Keep baby safely supported and do not let pauses delay necessary care.",
+  },
+  {
+    id: "c-care-choice", age: "communicating", context: "care", eyebrow: "A small participation", title: "Which clean sock?",
+    intro: "A choice can invite attention even when baby does not point or reach.",
+    steps: ["Hold up two safe, clean clothing items while baby is securely positioned.", "Name each once, then pause.", "Use whichever baby looks toward—or choose one yourself—and continue care without making it a test."],
+    why: "A simple, low-stakes choice makes room for baby’s attention and preferences.", stop: "Keep all fasteners, packaging, creams and wipes out of baby’s mouth and reach.",
+  },
+  // 9–12 months: feeding
+  {
+    id: "c-feed-words", age: "communicating", context: "feeding", eyebrow: "Language at the table", title: "One mealtime word",
+    intro: "Baby does not need a vocabulary lesson while eating.",
+    steps: ["Securely position and supervise baby according to your feeding guidance.", "Name one thing already present, such as “cup” or “spoon.”", "Pause and return attention to baby’s comfort and feeding signals."],
+    why: "One relevant word is enough to make mealtime linguistic and social.", stop: "The app does not assess food safety, texture, allergy, chewing or swallowing. Follow your healthcare professional’s guidance.",
+  },
+  {
+    id: "c-feed-turn", age: "communicating", context: "feeding", eyebrow: "Communication counts", title: "Notice the request",
+    intro: "A look, reach, sound or turn-away can be part of a mealtime exchange.",
+    steps: ["Use your baby’s recommended safe feeding setup and approach.", "Notice one communication signal without deciding what it must mean.", "Respond according to your knowledge of baby and your feeding guidance, using one calm phrase."],
+    why: "Treating nonverbal signals as meaningful supports responsive communication.", stop: "Always supervise feeding. Seek professional advice for coughing, choking, pain, poor intake or any feeding concern.",
+  },
+  // 9–12 months: walking
+  {
+    id: "c-walk-point", age: "communicating", context: "walking", eyebrow: "Shared attention", title: "Follow the point—or the look",
+    intro: "Baby may direct attention with a point, reach, sound or long look.",
+    steps: ["Move with baby using your usual safe, secure method.", "Notice what baby seems to direct attention toward.", "Name that one thing and wait before adding any more words."],
+    why: "Following baby’s attention turns their gesture or gaze into a meaningful conversational turn.", stop: "Keep unsafe objects, animals, traffic and plants out of reach. Baby’s safety matters more than following the look.",
+  },
+  {
+    id: "c-walk-hello", age: "communicating", context: "walking", eyebrow: "A real-world gesture", title: "Hello, then goodbye",
+    intro: "A doorway, familiar neighbour or favourite tree can anchor two useful social words.",
+    steps: ["Choose one familiar, comfortable stop while baby is safely supported.", "Say “hello” when you arrive and pause.", "Say “goodbye” as you leave; wave once if it fits naturally."],
+    why: "Words and gestures gain meaning when they repeatedly match a real beginning or ending.", stop: "Never require baby to interact with another person. Leave if baby seems wary, tired or uncomfortable.",
   },
 ];
 
