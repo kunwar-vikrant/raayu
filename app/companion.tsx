@@ -20,21 +20,21 @@ const emptyMemory: Memory = { favorites: [], entries: [], checked: [] };
 
 function Picture({ context, hero = false }: { context: string; hero?: boolean }) {
   return <svg className={hero ? "moment-art hero-art" : "moment-art"} viewBox="0 0 300 200" fill="none" aria-hidden="true">
-    <circle cx="237" cy="45" r="25" fill="#F5CE7C" />
-    <path d="M26 167C64 113 102 142 135 139C187 132 231 113 281 167" fill="#B7C7AD" />
-    <path d="M10 187C82 139 164 185 290 153V200H10Z" fill="#8AA58B" />
+    <circle cx="237" cy="45" r="25" fill="var(--art-sun)" />
+    <path d="M26 167C64 113 102 142 135 139C187 132 231 113 281 167" fill="var(--art-land-back)" />
+    <path d="M10 187C82 139 164 185 290 153V200H10Z" fill="var(--art-land-front)" />
     {context === "floor" ? <>
-      <rect x="116" y="131" width="78" height="22" rx="11" fill="#E08E73" /><rect x="125" y="109" width="60" height="22" rx="11" fill="#F2CD85" /><rect x="136" y="87" width="39" height="22" rx="11" fill="#668F8B" /><circle cx="155" cy="73" r="14" fill="#E08E73" />
+      <rect x="116" y="131" width="78" height="22" rx="11" fill="var(--art-orange)" /><rect x="125" y="109" width="60" height="22" rx="11" fill="var(--art-yellow)" /><rect x="136" y="87" width="39" height="22" rx="11" fill="var(--art-teal)" /><circle cx="155" cy="73" r="14" fill="var(--art-orange)" />
     </> : context === "walking" ? <>
-      <path d="M144 160V74" stroke="#516D54" strokeWidth="7" strokeLinecap="round" /><ellipse cx="118" cy="85" rx="26" ry="42" transform="rotate(-38 118 85)" fill="#668B69" /><ellipse cx="165" cy="104" rx="24" ry="38" transform="rotate(38 165 104)" fill="#89A37C" /><ellipse cx="157" cy="57" rx="21" ry="32" transform="rotate(25 157 57)" fill="#A9BC8C" />
+      <path d="M144 160V74" stroke="var(--art-dark)" strokeWidth="7" strokeLinecap="round" /><ellipse cx="118" cy="85" rx="26" ry="42" transform="rotate(-38 118 85)" fill="var(--art-leaf)" /><ellipse cx="165" cy="104" rx="24" ry="38" transform="rotate(38 165 104)" fill="var(--art-leaf-light)" /><ellipse cx="157" cy="57" rx="21" ry="32" transform="rotate(25 157 57)" fill="var(--art-leaf-top)" />
     </> : context === "care" ? <>
-      <path d="M103 85L127 70Q150 84 173 70L197 85L183 116L171 110V159H129V110L117 116Z" fill="#E6AC88" /><path d="M144 115L151 122L164 105" stroke="#FFF9ED" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M103 85L127 70Q150 84 173 70L197 85L183 116L171 110V159H129V110L117 116Z" fill="var(--art-leaf)" /><path d="M144 115L151 122L164 105" stroke="var(--art-paper)" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
     </> : context === "feeding" ? <>
-      <path d="M103 112H197C193 150 173 163 150 163C127 163 107 150 103 112Z" fill="#E6A684" /><ellipse cx="150" cy="112" rx="47" ry="10" fill="#F6CF9E" /><path d="M204 67L181 123" stroke="#5F8274" strokeWidth="8" strokeLinecap="round" /><ellipse cx="206" cy="63" rx="9" ry="15" transform="rotate(20 206 63)" fill="#5F8274" />
+      <path d="M103 112H197C193 150 173 163 150 163C127 163 107 150 103 112Z" fill="var(--art-leaf)" /><ellipse cx="150" cy="112" rx="47" ry="10" fill="var(--art-paper)" /><path d="M204 67L181 123" stroke="var(--art-dark)" strokeWidth="8" strokeLinecap="round" /><ellipse cx="206" cy="63" rx="9" ry="15" transform="rotate(20 206 63)" fill="var(--art-dark)" />
     </> : <>
-      <path d="M94 155V91Q123 78 150 92Q177 78 206 91V155Q179 142 150 157Q122 142 94 155Z" fill="#FFF3D9" /><path d="M150 94V154" stroke="#CBBE9C" strokeWidth="3" /><path d="M116 115C101 100 123 94 127 108C139 95 151 114 116 136Z" fill="#D98972" /><path d="M165 108H190M165 120H190M165 132H182" stroke="#A6B99D" strokeWidth="3" strokeLinecap="round" />
+      <path d="M94 155V91Q123 78 150 92Q177 78 206 91V155Q179 142 150 157Q122 142 94 155Z" fill="var(--art-paper)" /><path d="M150 94V154" stroke="var(--art-fold)" strokeWidth="3" /><path d="M116 115C101 100 123 94 127 108C139 95 151 114 116 136Z" fill="var(--art-accent)" /><path d="M165 108H190M165 120H190M165 132H182" stroke="var(--art-line)" strokeWidth="3" strokeLinecap="round" />
     </>}
-    <path d="M46 62H88M67 41V83" stroke="#C9B98C" strokeWidth="2" strokeLinecap="round" /><circle cx="253" cy="110" r="4" fill="#E2A58B" />
+    <path d="M46 62H88M67 41V83" stroke="var(--art-yellow)" strokeWidth="4" strokeLinecap="round" /><circle cx="253" cy="110" r="4" fill="var(--art-orange)" />
   </svg>;
 }
 
@@ -130,7 +130,7 @@ export default function Companion({ age, events, onCoach, onOpen, onBreak, onCle
     </nav>
     {storageError && <p className="storage-notice" role="status">{storageError}</p>}
     {tab === "today" && <>
-      <div className="dashboard-heading"><div><p className="overline">YOUR FIRST YEAR, TOGETHER</p><h1>A little connection.<br />A lovely place to start.</h1><p>Small ideas for your baby. A little breathing room for you.</p></div><span className="stage-pill">✦ {profile.label}<small>{profile.note}</small></span></div>
+      <div className="dashboard-heading"><div><p className="overline">YOUR FIRST YEAR, TOGETHER</p><h1>Small moments.<br /><span>Big beginnings.</span></h1><p>Small ideas for your baby. A little breathing room for you.</p></div><span className="stage-pill">✦ {profile.label}<small>{profile.note}</small></span></div>
       <div className="dashboard-grid">
         <section className="daily-feature"><div className="feature-copy"><p className="overline">A MOMENT TO TRY TODAY</p><span className="feature-tag">{contexts.find((item) => item.id === featured.context)?.label} · {profile.label}</span><h2>{featured.title}</h2><p>{featured.intro}</p><button className="pine-button" onClick={() => onOpen(featured)}>Let’s try it <span>↗</span></button><span className="gentle-note">A few minutes. Your pace is the right pace.</span></div><Picture context={featured.context} hero /></section>
         <section className="checkin-card"><span className="checkin-sun">✳</span><p className="overline">MEET THIS MOMENT</p><h2>How are you<br />both doing?</h2><p>A few simple questions. An idea that fits how today actually feels.</p><button className="outline-button" onClick={onCoach}>Find our moment <span>→</span></button><button className="break-link" onClick={onBreak}>Feeling overwhelmed? Take a pause ♡</button></section>
