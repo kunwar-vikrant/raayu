@@ -5,7 +5,7 @@ age-aware, screen-light interaction based on the baby’s current state, the
 caregiver’s capacity, and the moment they are already sharing.
 
 The library currently covers six stages from birth to 12 months, with 10
-contextual ideas in each stage plus lower-stimulation and caregiver-break paths.
+contextual ideas per stage, three additional 6–8 month games, and comfort paths.
 Each stage includes a concise safety lens and links to official age guidance.
 
 ## Everyday companion
@@ -36,6 +36,7 @@ Open [http://localhost:3000](http://localhost:3000).
 ```bash
 npm run lint
 npm run build
+node --test tests/personalization.test.mjs
 ```
 
 ## Deploy to Vercel
@@ -48,3 +49,18 @@ defaults, or deploy it using the Vercel CLI.
 
 The activity library is a research-informed prototype awaiting clinical review.
 It is not medical advice or a developmental assessment.
+
+## Personalised play
+
+Optional nickname, interests, familiar phrase, and quiet preference stay in local
+storage under `raayu-baby-profile-v1`. Age remains a manually selected band.
+Recommendations use explicit interest tags, daily rotation, and caregiver-reported
+baby reactions. A recent stop/disinterest response lowers a card for three days;
+engagement supports later familiar repeats. Caregiver ease is not treated as proof
+that baby enjoyed an activity. These editorial ranking rules are not validated.
+
+The caregiver play guide presents setup, one turn, observation, and optional
+repetition. It has no skill score, required response, or escalation of difficulty.
+Every activity exposes source notes linking WHO guidance, AAP play examples, and
+CDC resources. Those sources support principles, not the app or its exact scripts.
+Evidence does not establish that Raayu improves IQ or accelerates milestones.

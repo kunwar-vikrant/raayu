@@ -2,10 +2,13 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Companion from "./companion";
+import PlaySession from "./play-session";
+import { activityEvidence, defaultProfile, parseProfile, PROFILE_KEY, rankActivities, recommendationReason, responseOptions, type BabyProfile, type BabyResponse } from "./personalization";
 import {
   activityCount,
   ageOptions,
   chooseActivity,
+  cards,
   findActivity,
   type AgeId,
 } from "./activities";
@@ -22,6 +25,7 @@ type TestEvent = {
   context: string;
   feedback: string | null;
   completedAt?: string;
+  babyResponse?: BabyResponse;
 };
 
 const HISTORY_KEY = "here-baby-activity-history-v2";
@@ -68,6 +72,10 @@ function formatTime(seconds: number) {
 export default function Home() {
   const [age, setAge] = useState<AgeId>("newborn");
   const [view, setView] = useState<"home" | "coach">("home");
+  const [babyProfile, setBabyProfile] = useState<BabyProfile>(defaultProfile);
+  const [guided, setGuided] = useState(false);
+  const [profileStorageError, setProfileStorageError] = useState("");
+  const [today, setToday] = useState(0);
   const [step, setStep] = useState(0);
   const [state, setState] = useState("");
   const [capacity, setCapacity] = useState("");
@@ -95,8 +103,10 @@ export default function Home() {
 
   useEffect(() => {
     const hydrate = window.setTimeout(() => {
+      setToday(Math.floor(Date.now() / 86400000));
       setSpeechAvailable("speechSynthesis" in window && "SpeechSynthesisUtterance" in window);
       try {
+        setBabyProfile(parseProfile(JSON.parse(window.localStorage.getItem(PROFILE_KEY) ?? "null")));
         const savedAge = window.localStorage.getItem("raayu-age");
         if (ageOptions.some((option) => option.id === savedAge)) setAge(savedAge as AgeId);
         const storedHistory: unknown = JSON.parse(window.localStorage.getItem(HISTORY_KEY) ?? "[]");
@@ -112,13 +122,19 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (!resting || finished || seconds <= 0) return;
+    if (!resting || guided || finished || seconds <= 0) return;
     const timer = window.setTimeout(() => {
       setSeconds((value) => Math.max(0, value - 1));
       if (seconds <= 1) setFinished(true);
     }, 1000);
     return () => window.clearTimeout(timer);
-  }, [resting, finished, seconds]);
+  }, [resting, guided, finished, seconds]);
+
+  const updateBabyProfile = (value: BabyProfile) => {
+    setBabyProfile(value);
+    try { window.localStorage.setItem(PROFILE_KEY, JSON.stringify(value)); setProfileStorageError(""); }
+    catch { setProfileStorageError("Preferences work this session, but could not be saved in this browser."); }
+  };
 
   const questions = [
     { kicker: "First, notice", title: "How is baby right now?", choices: babyStates },
@@ -133,7 +149,15 @@ export default function Home() {
 
   const persistEvents = (next: TestEvent[]) => {
     setEvents(next);
-    try { window.localStorage.setItem(EVENTS_KEY, JSON.stringify(next)); } catch { /* optional */ }
+    try { window.localStorage.setItem(EVENTS_KEY, JSON.stringify(next)); }
+    catch { setProfileStorageError("Your activity reflection works this session, but this browser could not save it for next time."); }
+  };
+
+  const removeMoment = (id: string) => {
+    if (!window.confirm("Remove this activity session and its reflection from this browser?")) return;
+    const next = events.filter((item) => item.id !== id);
+    persistEvents(next);
+    persistHistory(history.filter((activityId) => next.some((item) => item.activityId === activityId)));
   };
 
   const choose = (id: string) => {
@@ -145,18 +169,24 @@ export default function Home() {
       setStep(2);
     } else {
       setContext(id);
-      const selected = chooseActivity({ age, state, capacity, context: id, recent: history });
+      const selected = selectForBaby(id);
       setActivityId(selected.id);
       setShowResult(true);
     }
   };
 
+  const selectForBaby = (location: string, excludeId?: string) => {
+    const base = chooseActivity({ age, state, capacity, context: location, recent: history });
+    if (base.age === "all") return base;
+    return rankActivities(cards.filter((item) => item.age === age && item.context === location && item.id !== excludeId), babyProfile, events, today)[0] ?? base;
+  };
+
   const anotherIdea = () => {
-    const selected = chooseActivity({ age, state, capacity, context, recent: [...history, activity.id] });
+    const selected = selectForBaby(context, activity.id);
     setActivityId(selected.id);
   };
 
-  const begin = (withVoice: boolean) => {
+  const begin = (withVoice: boolean, interactive = false) => {
     const duration = secondsFor(capacity);
     const id = `${Date.now()}-${activity.id}`;
     setSeconds(duration);
@@ -164,6 +194,7 @@ export default function Home() {
     setFeedback("");
     setSessionId(id);
     setResting(true);
+    setGuided(interactive);
 
     const nextHistory = [...history.filter((item) => item !== activity.id), activity.id].slice(-12);
     persistHistory(nextHistory);
@@ -195,6 +226,11 @@ export default function Home() {
     persistEvents(next);
   };
 
+  const saveBabyResponse = (answer: BabyResponse) => {
+    persistEvents(events.map((item) => item.id === sessionId
+      ? { ...item, babyResponse: answer, completedAt: new Date().toISOString() } : item));
+  };
+
   const reset = () => {
     setView("home");
     window.scrollTo({ top: 0, behavior: "auto" });
@@ -206,6 +242,7 @@ export default function Home() {
     setActivityId("");
     setShowResult(false);
     setResting(false);
+    setGuided(false);
     setFinished(false);
     setFeedback("");
     setSessionId("");
@@ -257,13 +294,15 @@ export default function Home() {
     step > 1 ? { label: choiceLabel(capacities, capacity), target: 1 } : null,
   ].filter(Boolean) as Array<{ label: string; target: number }>;
 
+  if (resting && guided) return <PlaySession activity={activity} profile={babyProfile} age={age} storageError={profileStorageError} onResponse={saveBabyResponse} onExit={reset} />;
+
   if (resting) {
     return (
       <main className={`rest-screen ${largeText ? "large-text" : ""}`}>
         <div className="rest-orbit rest-orbit-one" />
         <div className="rest-orbit rest-orbit-two" />
         <section className="rest-card" aria-live="polite">
-          <div className="rest-mark">h,b</div>
+          <div className="rest-mark">r.</div>
           {!finished ? (
             <>
               <p className="rest-eyebrow">Phone resting · you connecting</p>
@@ -277,6 +316,7 @@ export default function Home() {
               <p className="rest-eyebrow">That was enough</p>
               <h1>How did that moment feel?</h1>
               <p className="feedback-privacy">Your answer stays on this device.</p>
+              <fieldset className="baby-reflection"><legend>What did baby do?</legend>{responseOptions.map((option) => <label key={option.id}><input type="radio" name="baby-response" checked={events.find((item) => item.id === sessionId)?.babyResponse === option.id} onChange={() => saveBabyResponse(option.id)} />{option.label}</label>)}</fieldset>
               <div className="feedback-grid">
                 {["Easy to try", "Baby needed a break", "Wording unclear", "Not for us"].map((option) => (
                   <button
@@ -316,7 +356,8 @@ export default function Home() {
         </div>
       </header>
 
-      {view === "home" ? <Companion age={age} events={events} onClearHistory={clearTestNotes} onCoach={() => { reset(); setView("coach"); }} onOpen={(item) => {
+      {profileStorageError && <p role="status" className="storage-notice">{profileStorageError}</p>}
+      {view === "home" ? <Companion age={age} events={events} babyProfile={babyProfile} onRemoveMoment={removeMoment} onProfileChange={updateBabyProfile} onClearHistory={clearTestNotes} onCoach={() => { reset(); setView("coach"); }} onOpen={(item) => {
         setState("calm"); setCapacity("three"); setContext(item.context); setActivityId(item.id); setShowResult(true); setView("coach");
         window.scrollTo({ top: 0, behavior: "auto" });
       }} onBreak={() => {
@@ -388,6 +429,7 @@ export default function Home() {
               <p className="card-kicker coral">{activity.eyebrow}</p>
               <h2>{activity.title}</h2>
               <p className="activity-intro">{activity.intro}</p>
+              {activity.age !== "all" && <p className="personal-reason">{babyProfile.nickname ? `For ${babyProfile.nickname}: ` : "Why this suggestion: "}{recommendationReason(activity, babyProfile, events)}</p>}
               <ol className="steps">
                 {activity.steps.map((item, index) => (
                   <li key={item}><span>{index + 1}</span><p>{item}</p></li>
@@ -395,12 +437,14 @@ export default function Home() {
               </ol>
               <div className="insight"><strong>Why this moment matters</strong><p>{activity.why}</p></div>
               <div className="stop-cue"><strong>When to pause</strong><p>{activity.stop}</p></div>
+              <details className="activity-evidence"><summary>What supports this activity?</summary><strong>{activityEvidence(activity).principle}</strong><p>{activityEvidence(activity).explanation}</p><p>Raayu has not been clinically evaluated. No claim is made that this activity boosts IQ or speeds up milestones. Enjoyment depends on your baby’s response today.</p>{activityEvidence(activity).links.map((link) => <a key={link.url} href={link.url} target="_blank" rel="noreferrer">{link.title} ↗</a>)}</details>
               <div className="result-options">
                 <button className="quiet-link" onClick={anotherIdea}>Try another idea for this moment</button>
                 <span>Recent activities are avoided on this device.</span>
               </div>
               <fieldset className="moment-duration"><legend>A gentle time reminder</legend>{[{ id: "tiny", label: "30 sec" }, { id: "three", label: "3 min" }, { id: "open", label: "5 min" }].map((option) => <label key={option.id}><input type="radio" name="duration" checked={capacity === option.id} onChange={() => setCapacity(option.id)} />{option.label}</label>)}<small>End sooner whenever baby needs.</small></fieldset>
               <div className="action-stack">
+                {activity.age !== "all" && <button className="interactive-action" onClick={() => begin(false, true)}>Play together · guide me one turn at a time →</button>}
                 {speechAvailable ? (
                   <button className="primary-action" onClick={() => begin(true)}><span>Start & read aloud</span><small>The screen will rest</small></button>
                 ) : (
@@ -430,7 +474,7 @@ export default function Home() {
             <button className="notes-close" onClick={() => setNotesOpen(false)} aria-label="Close testing notes">×</button>
             <p className="card-kicker">On-device testing</p>
             <h2 id="notes-title">Prototype notes</h2>
-            <p className="notes-intro">These lightweight signals stay in this browser. No name, photo, audio or exact birth date is stored.</p>
+            <p className="notes-intro">Activity reflections and optional baby preferences stay in this browser. No photo, audio or exact birth date is collected.</p>
             <div className="notes-stats">
               <div><strong>{events.length}</strong><span>moments started</span></div>
               <div><strong>{events.filter((item) => item.feedback).length}</strong><span>responses</span></div>

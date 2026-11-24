@@ -457,6 +457,31 @@ export const cards: Activity[] = [
   },
 ];
 
+// Optional games for the 6–8 month band. Caregiver adapts to comfort and interest.
+cards.push(
+  {
+    id: "x-hold-peekaboo", age: "exploring", context: "holding", eyebrow: "A tiny, predictable surprise", title: "There you are!",
+    intro: "Hide your own eyes, then reappear with the same warm hello. Baby chooses whether the surprise happens again.",
+    steps: ["Settle baby in a secure, familiar supported position. Keep your face comfortably visible.", "Cover only your own eyes with your hands for a moment, then uncover them and say a gentle “There you are!” Keep baby’s face completely clear.", "Wait. If baby seems interested and comfortable, repeat once; if they turn away or seem startled, finish."],
+    why: "AAP includes peekaboo among infant play ideas; CDC also suggests it in early infancy. Predictable social games offer a chance to take turns. This particular script has not been tested.",
+    stop: "Never cover baby’s face, use a cloth over their head, or make a sudden loud reveal. Stop at any sign of distress or fatigue.",
+  },
+  {
+    id: "x-hold-picture", age: "exploring", context: "holding", eyebrow: "Baby tells the story", title: "The one-picture adventure",
+    intro: "One page is a whole story when you follow what baby notices. A book is optional: your own hand can be the picture.",
+    steps: ["Hold baby securely and hold one intact baby-safe board book where they can comfortably see it. Without a book, show your free hand.", "Follow one look or touch. Name that picture or your hand, then offer one soft matching sound. Keep the book and any loose parts safely controlled.", "Wait for a look, movement or sound. Respond to that turn instead of trying to finish the page; put the book away when baby has had enough."],
+    why: "CDC suggests looking at pictures together and responding to babbling at six months. Following the baby’s focus makes the exchange relevant; finishing a book is unnecessary.",
+    stop: "Use no torn pages, staples, detachable parts or unsafe materials. Keep feeding separate from this game and maintain secure support throughout.",
+  },
+  {
+    id: "x-floor-favourite", age: "exploring", context: "floor", eyebrow: "A tiny object investigation", title: "What did your hands discover?",
+    intro: "One familiar, baby-safe object. One sound from you. Then baby gets to change the plan.",
+    steps: ["Stay beside baby, awake on their back in a clear floor space. Offer a clean, intact object made for their age within easy reach; do not pull baby into sitting.", "Let baby grasp or touch it independently. Name one real action: “Tap,” “Turn,” or “You found it.” If it naturally makes a gentle sound, name that sound once.", "Pause. Follow baby’s next look, reach or hand movement rather than taking the object away to demonstrate again. Quiet looking is a complete turn."],
+    why: "AAP describes object exploration as infant play, and CDC includes reaching and mouthing among six-month explorations. This is an adapted observation game, not an exercise to achieve a skill.",
+    stop: "Use nothing small enough to choke on or containing cords, accessible batteries, magnets or loose parts. No shaking near the ears; supervise continuously and stop when baby needs a break.",
+  },
+);
+
 const special: Record<string, Activity> = {
   fussy: {
     id: "special-fussy", age: "all", context: "all", eyebrow: "Connection, not stimulation", title: "Make the world smaller",

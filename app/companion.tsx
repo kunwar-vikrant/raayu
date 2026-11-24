@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { ageOptions, cards, findActivity, type Activity, type AgeId } from "./activities";
+import BabyProfileEditor from "./baby-profile";
+import { rankActivities, recommendationReason, responseOptions, type BabyProfile, type BabyResponse } from "./personalization";
 
 type Entry = { id: string; text: string; createdAt: string; age: AgeId; kind: string };
-type Moment = { id: string; startedAt: string; activityId: string; feedback: string | null };
+type Moment = { id: string; startedAt: string; activityId: string; feedback: string | null; age?: AgeId; babyResponse?: BabyResponse };
 type Tab = "today" | "library" | "journal" | "guide";
 type Memory = { favorites: string[]; entries: Entry[]; checked: string[] };
 const KEY = "raayu-companion-v1";
@@ -38,8 +40,8 @@ function Picture({ context, hero = false }: { context: string; hero?: boolean })
   </svg>;
 }
 
-export default function Companion({ age, events, onCoach, onOpen, onBreak, onClearHistory }: {
-  age: AgeId; events: Moment[]; onCoach: () => void; onOpen: (activity: Activity) => void; onBreak: () => void; onClearHistory: () => void;
+export default function Companion({ age, events, onCoach, onOpen, onBreak, onClearHistory, babyProfile, onProfileChange, onRemoveMoment }: {
+  age: AgeId; events: Moment[]; onCoach: () => void; onOpen: (activity: Activity) => void; onBreak: () => void; onClearHistory: () => void; babyProfile: BabyProfile; onProfileChange: (profile: BabyProfile) => void; onRemoveMoment: (id: string) => void;
 }) {
   const [tab, changeTab] = useState<Tab>("today");
   const [memory, setMemory] = useState<Memory>(emptyMemory);
@@ -88,9 +90,7 @@ export default function Companion({ age, events, onCoach, onOpen, onBreak, onCle
   }
   const stageCards = cards.filter((item) => item.age === age);
   const completedIds = events.map((event) => event.activityId);
-  const likedIds = events.filter((event) => event.feedback === "Easy to try").map((event) => event.activityId);
-  const ordered = [...stageCards.slice(day % stageCards.length), ...stageCards.slice(0, day % stageCards.length)];
-  const recommended = [...ordered].sort((a, b) => Number(completedIds.includes(a.id)) - Number(completedIds.includes(b.id)) || Number(likedIds.includes(b.id)) - Number(likedIds.includes(a.id)));
+  const recommended = rankActivities(stageCards, babyProfile, events, day);
   const todayIdeas = recommended.filter((item, index, all) => all.findIndex((other) => other.context === item.context) === index).slice(0, 4);
   const featured = todayIdeas[0];
   const filtered = stageCards.filter((item) => (category === "all" || item.context === category) && (!savedOnly || memory.favorites.includes(item.id)) && `${item.title} ${item.intro} ${item.eyebrow} ${item.steps.join(" ")}`.toLowerCase().includes(query.toLowerCase()));
@@ -109,7 +109,7 @@ export default function Companion({ age, events, onCoach, onOpen, onBreak, onCle
     setDraft(""); setNotice("Added to your journal.");
   }
   function exportJournal() {
-    const content = ["RAAYU · FAMILY JOURNAL", `Exported ${new Date().toLocaleDateString()}`, `Current stage: ${profile.label}`, "Personal observations, not a developmental assessment.", "", "NOTES & QUESTIONS", ...memory.entries.map((entry) => `${new Date(entry.createdAt).toLocaleDateString()} · ${ageOptions.find((option) => option.id === entry.age)?.label} · ${entry.kind}\n${entry.text}\n`), "MOMENTS TRIED", ...events.map((event) => `${new Date(event.startedAt).toLocaleDateString()} · ${findActivity(event.activityId)?.title ?? "Activity"} · ${event.feedback ?? "No feedback recorded"}`)].join("\n");
+    const content = ["RAAYU · FAMILY JOURNAL", `Exported ${new Date().toLocaleDateString()}`, `Current stage: ${profile.label}`, "Personal observations, not a developmental assessment.", "", "NOTES & QUESTIONS", ...memory.entries.map((entry) => `${new Date(entry.createdAt).toLocaleDateString()} · ${ageOptions.find((option) => option.id === entry.age)?.label} · ${entry.kind}\n${entry.text}\n`), "MOMENTS TRIED", ...events.map((event) => `${new Date(event.startedAt).toLocaleDateString()} · ${findActivity(event.activityId)?.title ?? "Activity"} · Caregiver: ${event.feedback ?? "No feedback recorded"} · Baby: ${responseOptions.find((option) => option.id === event.babyResponse)?.label ?? "No observation recorded"}`)].join("\n");
     const url = URL.createObjectURL(new Blob([content], { type: "text/plain;charset=utf-8" }));
     const anchor = document.createElement("a"); anchor.href = url; anchor.download = "raayu-journal.txt"; anchor.click();
     window.setTimeout(() => URL.revokeObjectURL(url), 1000);
@@ -131,6 +131,8 @@ export default function Companion({ age, events, onCoach, onOpen, onBreak, onCle
     {storageError && <p className="storage-notice" role="status">{storageError}</p>}
     {tab === "today" && <>
       <div className="dashboard-heading"><div><p className="overline">YOUR FIRST YEAR, TOGETHER</p><h1>Small moments.<br /><span>Big beginnings.</span></h1><p>Small ideas for your baby. A little breathing room for you.</p></div><span className="stage-pill">✦ {profile.label}<small>{profile.note}</small></span></div>
+      <BabyProfileEditor profile={babyProfile} onChange={onProfileChange} />
+      <p className="daily-reason">{recommendationReason(featured, babyProfile, events)}</p>
       <div className="dashboard-grid">
         <section className="daily-feature"><div className="feature-copy"><p className="overline">A MOMENT TO TRY TODAY</p><span className="feature-tag">{contexts.find((item) => item.id === featured.context)?.label} · {profile.label}</span><h2>{featured.title}</h2><p>{featured.intro}</p><button className="pine-button" onClick={() => onOpen(featured)}>Let’s try it <span>↗</span></button><span className="gentle-note">A few minutes. Your pace is the right pace.</span></div><Picture context={featured.context} hero /></section>
         <section className="checkin-card"><span className="checkin-sun">✳</span><p className="overline">MEET THIS MOMENT</p><h2>How are you<br />both doing?</h2><p>A few simple questions. An idea that fits how today actually feels.</p><button className="outline-button" onClick={onCoach}>Find our moment <span>→</span></button><button className="break-link" onClick={onBreak}>Feeling overwhelmed? Take a pause ♡</button></section>
@@ -140,7 +142,7 @@ export default function Companion({ age, events, onCoach, onOpen, onBreak, onCle
       <div className="bottom-grid"><section className="stage-note"><span className="note-icon">✦</span><div><p className="overline">GROWING AT {profile.label}</p><h2>Make room for discovery.</h2><p>{profile.note}. Follow what interests your baby and adapt to their comfort.</p><a href={profile.developmentUrl} target="_blank" rel="noreferrer">Read the CDC development guide ↗</a></div></section><section className="journal-nudge"><p className="overline">THE LITTLE THINGS ARE THE BIG THINGS</p><h2>What surprised you today?</h2><p>A new sound. A familiar smile. A question for the next appointment.</p><button className="text-action" onClick={() => setTab("journal")}>Keep a little note +</button></section></div>
     </>}
     {tab === "library" && <>
-      <div className="dashboard-heading"><div><p className="overline">A LITTLE INSPIRATION</p><h1>Ordinary moments.<br />Wonderful possibilities.</h1><p>Explore ten ideas for {profile.label}. Change baby’s age above to explore another stage.</p></div></div>
+      <div className="dashboard-heading"><div><p className="overline">A LITTLE INSPIRATION</p><h1>Ordinary moments.<br />Wonderful possibilities.</h1><p>Explore {stageCards.length} ideas for {profile.label}. Change baby’s age above to explore another stage.</p></div></div>
       <div className="library-tools"><label className="search-field"><span aria-hidden="true">⌕</span><input type="search" placeholder="Try sounds, hands, quiet…" aria-label="Search activities" value={query} onChange={(event) => setQuery(event.target.value)} /></label><button className={`filter-saved ${savedOnly ? "active" : ""}`} onClick={() => setSavedOnly(!savedOnly)} aria-pressed={savedOnly}>♡ Saved for this age</button></div>
       <div className="category-filters" aria-label="Activity categories">{contexts.map((item) => <button key={item.id} aria-pressed={category === item.id} onClick={() => setCategory(item.id)}>{item.mark} {item.label}</button>)}</div>
       <p className="results-count" role="status">{filtered.length} {filtered.length === 1 ? "idea" : "ideas"} for {profile.label}</p>
@@ -151,7 +153,7 @@ export default function Companion({ age, events, onCoach, onOpen, onBreak, onCle
     {tab === "journal" && <>
       <div className="dashboard-heading"><div><p className="overline">YOUR FAMILY’S LITTLE MEMORY BOOK</p><h1>Worth remembering.</h1><p>Notice patterns, hold onto small joys, and keep questions ready for your clinician.</p></div><button className="outline-button export-button" onClick={exportJournal}>Export journal ↓</button></div>
       <div className="journal-layout"><section className="journal-composer"><h2>What’s on your mind?</h2><form onSubmit={addEntry}><label>Kind of note<select value={kind} onChange={(event) => setKind(event.target.value)}><option>Something I noticed</option><option>A little memory</option><option>A question for our clinician</option></select></label><label>Your note<textarea maxLength={2000} value={draft} onChange={(event) => { setDraft(event.target.value); setNotice(""); }} placeholder="Today, I noticed…" required /></label><p className="gentle-note">Saved in this browser only. No account or cloud sync. Export to keep a backup.</p><button className="pine-button" disabled={!ready || !draft.trim()}>Save this moment +</button></form><p className="status-message" role="status">{notice}</p></section><section className="journal-feed"><h2>Your notes <span>{memory.entries.length}</span></h2>{!memory.entries.length && <div className="empty-state"><span>♡</span><h3>Every story starts small.</h3><p>Your first note belongs here. There’s no perfect way to write it.</p></div>}{memory.entries.map((entry) => <article key={entry.id}><div className="entry-meta"><span>{entry.kind}</span><button aria-label="Delete note" onClick={() => { if (window.confirm("Delete this journal note from this device?")) save({ ...memory, entries: memory.entries.filter((item) => item.id !== entry.id) }); }}>×</button></div><p>{entry.text}</p><small>{new Date(entry.createdAt).toLocaleDateString()} · {ageOptions.find((option) => option.id === entry.age)?.label}</small></article>)}</section></div>
-      <div className="section-heading"><div><p className="overline">YOUR SHARED MOMENTS</p><h2>Recently explored</h2></div></div><div className="saved-rows">{recent.map((event) => <div key={event.id}><span>◒</span><div><strong>{findActivity(event.activityId)?.title ?? "A little moment"}</strong><small>{new Date(event.startedAt).toLocaleDateString()} · {event.feedback ?? "Started, no reflection yet"}</small></div></div>)}{!recent.length && <p className="subtle-copy">Start any activity and it will appear here. There are no streaks or daily targets.</p>}</div>
+      <div className="section-heading"><div><p className="overline">YOUR SHARED MOMENTS</p><h2>Recently explored</h2></div></div><div className="saved-rows">{recent.map((event) => <div key={event.id}><span>◒</span><div><strong>{findActivity(event.activityId)?.title ?? "A little moment"}</strong><small>{new Date(event.startedAt).toLocaleDateString()} · {responseOptions.find((option) => option.id === event.babyResponse)?.label ?? event.feedback ?? "Started, no reflection yet"}</small></div><button aria-label={`Remove session: ${findActivity(event.activityId)?.title ?? "activity"}`} onClick={() => onRemoveMoment(event.id)}>×</button></div>)}{!recent.length && <p className="subtle-copy">Start any activity and it will appear here. There are no streaks or daily targets.</p>}</div>
     </>}
     {tab === "guide" && <>
       <div className="dashboard-heading"><div><p className="overline">A LITTLE SUPPORT GOES A LONG WAY</p><h1>More confidence.<br />One day at a time.</h1><p>Practical reminders for {profile.label}, with trusted places to learn more.</p></div></div>
