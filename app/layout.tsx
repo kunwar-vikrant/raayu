@@ -7,13 +7,14 @@ export async function generateMetadata(): Promise<Metadata> {
   const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host") ?? "localhost:3000";
   const protocol = requestHeaders.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
   const origin = `${protocol}://${host}`;
-  const title = "here, baby — one small moment together";
-  const description = "A screen-light, baby-led interaction coach for the first year.";
+  const title = "Raayu — little moments, together";
+  const description = "Thoughtful activities for your baby’s first year, a private family journal, and practical support for everyday care.";
 
   return {
     metadataBase: new URL(origin),
     title,
     description,
+    icons: { icon: "/favicon.svg" },
     openGraph: {
       title,
       description,

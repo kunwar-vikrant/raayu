@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Companion from "./companion";
 import {
   activityCount,
   ageOptions,
@@ -66,6 +67,7 @@ function formatTime(seconds: number) {
 
 export default function Home() {
   const [age, setAge] = useState<AgeId>("newborn");
+  const [view, setView] = useState<"home" | "coach">("home");
   const [step, setStep] = useState(0);
   const [state, setState] = useState("");
   const [capacity, setCapacity] = useState("");
@@ -95,8 +97,12 @@ export default function Home() {
     const hydrate = window.setTimeout(() => {
       setSpeechAvailable("speechSynthesis" in window && "SpeechSynthesisUtterance" in window);
       try {
-        setHistory(JSON.parse(window.localStorage.getItem(HISTORY_KEY) ?? "[]"));
-        setEvents(JSON.parse(window.localStorage.getItem(EVENTS_KEY) ?? "[]"));
+        const savedAge = window.localStorage.getItem("raayu-age");
+        if (ageOptions.some((option) => option.id === savedAge)) setAge(savedAge as AgeId);
+        const storedHistory: unknown = JSON.parse(window.localStorage.getItem(HISTORY_KEY) ?? "[]");
+        const storedEvents: unknown = JSON.parse(window.localStorage.getItem(EVENTS_KEY) ?? "[]");
+        if (Array.isArray(storedHistory)) setHistory(storedHistory.filter((id) => typeof id === "string" && findActivity(id)));
+        if (Array.isArray(storedEvents)) setEvents(storedEvents.filter((item) => item && typeof item.id === "string" && typeof item.activityId === "string" && typeof item.startedAt === "string" && ageOptions.some((option) => option.id === item.age) && (item.feedback === null || typeof item.feedback === "string")));
         setLargeText(window.localStorage.getItem(TEXT_KEY) === "true");
       } catch {
         // Local storage may be unavailable in private browsing. The core flow still works.
@@ -190,6 +196,8 @@ export default function Home() {
   };
 
   const reset = () => {
+    setView("home");
+    window.scrollTo({ top: 0, behavior: "auto" });
     if (speechAvailable) window.speechSynthesis.cancel();
     setStep(0);
     setState("");
@@ -205,6 +213,7 @@ export default function Home() {
 
   const changeAge = (value: AgeId) => {
     setAge(value);
+    try { window.localStorage.setItem("raayu-age", value); } catch { /* optional */ }
     if (showResult) reset();
   };
 
@@ -292,27 +301,33 @@ export default function Home() {
   return (
     <main className={`app-shell ${largeText ? "large-text" : ""}`}>
       <header className="topbar">
-        <button className="brand" onClick={reset} aria-label="Here, baby home">
-          <span className="brand-mark">h,b</span>
-          <span>here, baby</span>
+        <button className="brand" onClick={reset} aria-label="Raayu home">
+          <span className="brand-mark">r.</span>
+          <span>raayu<span className="brand-caption">Little moments. A whole childhood.</span></span>
         </button>
         <div className="header-tools">
           <button className="tool-button text-tool" onClick={toggleText} aria-pressed={largeText} aria-label="Toggle larger text">Aa</button>
-          <button className="tool-button" onClick={() => setNotesOpen(true)}>Test notes <span>{events.length}</span></button>
           <label className="age-select">
             <span>Baby’s age</span>
-            <select value={age} onChange={(event) => changeAge(event.target.value as AgeId)}>
+            <select aria-label="Baby’s age" value={age} onChange={(event) => changeAge(event.target.value as AgeId)}>
               {ageOptions.map((option) => <option key={option.id} value={option.id}>{option.label}</option>)}
             </select>
           </label>
         </div>
       </header>
 
-      <div className="page-grid">
+      {view === "home" ? <Companion age={age} events={events} onClearHistory={clearTestNotes} onCoach={() => { reset(); setView("coach"); }} onOpen={(item) => {
+        setState("calm"); setCapacity("three"); setContext(item.context); setActivityId(item.id); setShowResult(true); setView("coach");
+        window.scrollTo({ top: 0, behavior: "auto" });
+      }} onBreak={() => {
+        const item = chooseActivity({ age, state: "fussy", capacity: "empty", context: "break", recent: history });
+        setContext("break"); setCapacity("tiny"); setActivityId(item.id); setShowResult(true); setView("coach");
+      }} /> : <div className="page-grid">
         <aside className="story-panel">
+          <button className="text-action coach-home" onClick={reset}>← Back to today</button>
           <p className="overline">One small moment</p>
-          <h1>You don’t need to entertain your baby.</h1>
-          <p className="story-copy">Notice what this moment needs. We’ll offer one simple way to connect, then get out of the way.</p>
+          <h1>A little time.<br />A lot of together.</h1>
+          <p className="story-copy">Follow your baby’s interest. Pause when they need to. Even a few quiet seconds together count.</p>
           <div className="principles"><span>Baby-led</span><span>Screen-light</span><span>No scores</span></div>
           <div className="library-note">
             <strong>{activityCount} drafted moments</strong>
@@ -384,6 +399,7 @@ export default function Home() {
                 <button className="quiet-link" onClick={anotherIdea}>Try another idea for this moment</button>
                 <span>Recent activities are avoided on this device.</span>
               </div>
+              <fieldset className="moment-duration"><legend>A gentle time reminder</legend>{[{ id: "tiny", label: "30 sec" }, { id: "three", label: "3 min" }, { id: "open", label: "5 min" }].map((option) => <label key={option.id}><input type="radio" name="duration" checked={capacity === option.id} onChange={() => setCapacity(option.id)} />{option.label}</label>)}<small>End sooner whenever baby needs.</small></fieldset>
               <div className="action-stack">
                 {speechAvailable ? (
                   <button className="primary-action" onClick={() => begin(true)}><span>Start & read aloud</span><small>The screen will rest</small></button>
@@ -395,7 +411,7 @@ export default function Home() {
             </article>
           )}
         </section>
-      </div>
+      </div>}
 
       <footer>
         <p><strong>Prototype guidance only.</strong> Not medical advice or a developmental assessment.</p>

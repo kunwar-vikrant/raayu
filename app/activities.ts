@@ -59,7 +59,7 @@ export const ageOptions: Array<{
 
 const sharedStop = "Pause if baby looks away repeatedly, yawns, stiffens, splays their fingers or becomes fussy.";
 
-const cards: Activity[] = [
+export const cards: Activity[] = [
   // 0–4 weeks: holding
   {
     id: "n-hold-face", age: "newborn", context: "holding", eyebrow: "Close and quiet", title: "Your face is enough",
